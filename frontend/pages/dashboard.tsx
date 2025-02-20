@@ -1,8 +1,8 @@
 // pages/dashboard.tsx
 
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState, MouseEvent } from 'react';
 import axios from 'axios';
-import Calendar from 'react-calendar';
+import Calendar, { Value } from 'react-calendar'; // Import Value type
 import 'react-calendar/dist/Calendar.css';
 import { AuthContext } from '../context/AuthContext';
 import useWebSocket from 'react-use-websocket';
@@ -110,15 +110,15 @@ const Dashboard: React.FC = () => {
   };
 
   // Fix: Handle Calendar onChange with proper typing
-  const handleDateChange = (value: Date | Date[] | null) => {
-    if (value instanceof Date) {
-      setSelectedDate(value);
-    } else if (Array.isArray(value)) {
-      setSelectedDate(value[0]); // Use the first date in the range
-    } else {
-      setSelectedDate(null); // Handle null case
-    }
-  };
+  const handleDateChange = (value: Value, event: MouseEvent<HTMLButtonElement, MouseEvent>) => {
+  if (value instanceof Date) {
+    setSelectedDate(value);
+  } else if (Array.isArray(value)) {
+    setSelectedDate(value[0]); // Use the first date in the range
+  } else {
+    setSelectedDate(null); // Handle null case
+  }
+};
 
   const handleDeleteTask = async (id: number) => {
     try {
