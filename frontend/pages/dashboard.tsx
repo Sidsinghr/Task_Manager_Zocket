@@ -109,6 +109,17 @@ const Dashboard: React.FC = () => {
     return null;
   };
 
+  // Fix: Handle Calendar onChange with proper typing
+  const handleDateChange = (value: Date | Date[] | null) => {
+    if (value instanceof Date) {
+      setSelectedDate(value);
+    } else if (Array.isArray(value)) {
+      setSelectedDate(value[0]); // Use the first date in the range
+    } else {
+      setSelectedDate(null); // Handle null case
+    }
+  };
+
   const handleDeleteTask = async (id: number) => {
     try {
       await axios.delete(
@@ -179,7 +190,7 @@ I need help with:
           <div className="w-full lg:w-1/3 bg-white p-4 rounded shadow">
             <h2 className="text-xl font-semibold text-gray-800 mb-4">Calendar</h2>
             <Calendar
-              onChange={setSelectedDate}
+              onChange={handleDateChange} // Updated to use the new handler
               value={selectedDate}
               tileClassName={tileClassName}
               className="mx-auto"
