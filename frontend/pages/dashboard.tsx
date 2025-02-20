@@ -1,6 +1,6 @@
-import React, { useContext, useEffect, useState, MouseEvent } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import axios from 'axios';
-import Calendar from 'react-calendar'; // Remove the incorrect import
+import Calendar, { Value, OnChangeValue } from 'react-calendar'; // Import correct types
 import 'react-calendar/dist/Calendar.css';
 import { AuthContext } from '../context/AuthContext';
 import useWebSocket from 'react-use-websocket';
@@ -9,9 +9,6 @@ import ChatInterface from '../components/ChatInterface';
 import TaskList from '../components/TaskList';
 import CreateTaskModal from '../components/CreateTaskModal';
 import EditTaskModal from '../components/EditTaskModal';
-
-// Define the Value type manually
-type Value = Date | [Date, Date] | null;
 
 const Dashboard: React.FC = () => {
   const { token, logout } = useContext(AuthContext);
@@ -22,7 +19,7 @@ const Dashboard: React.FC = () => {
   const [editTask, setEditTask] = useState<any>(null);
 
   // For date selection on the calendar
-  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+  const [selectedDate, setSelectedDate] = useState<Value>(null);
 
   // NEW: AI prompt state
   const [aiPrompt, setAiPrompt] = useState('');
@@ -73,7 +70,7 @@ const Dashboard: React.FC = () => {
 
   // Filter tasks for the selected date
   useEffect(() => {
-    if (selectedDate) {
+    if (selectedDate instanceof Date) {
       const selectedStr = selectedDate.toDateString();
       const filtered = tasks.filter((task) => {
         if (task.DueDate) {
@@ -111,7 +108,7 @@ const Dashboard: React.FC = () => {
   };
 
   // Fix: Handle Calendar onChange with proper typing
-  const handleDateChange = (value: Value, event: MouseEvent<HTMLButtonElement, MouseEvent>) => {
+  const handleDateChange: OnChangeValue = (value, event) => {
     if (value instanceof Date) {
       setSelectedDate(value);
     } else if (Array.isArray(value)) {
