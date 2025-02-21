@@ -15,7 +15,7 @@ var DB *gorm.DB
 func ConnectDatabase() {
     host := os.Getenv("DB_HOST")
     port := os.Getenv("DB_PORT")
-    user := os.Getenv("DB_USER")
+    user := os.Getenv("DB_USERNAME")  // Updated: use DB_USERNAME instead of DB_USER
     password := os.Getenv("DB_PASSWORD")
     dbname := os.Getenv("DB_NAME")
 
@@ -28,7 +28,7 @@ func ConnectDatabase() {
         missing = append(missing, "DB_PORT")
     }
     if user == "" {
-        missing = append(missing, "DB_USER")
+        missing = append(missing, "DB_USERNAME")
     }
     if password == "" {
         missing = append(missing, "DB_PASSWORD")
@@ -36,7 +36,6 @@ func ConnectDatabase() {
     if dbname == "" {
         missing = append(missing, "DB_NAME")
     }
-
     if len(missing) > 0 {
         log.Fatalf("Database environment variables not set properly. Missing: %v", missing)
     }
