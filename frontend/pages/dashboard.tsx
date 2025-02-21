@@ -209,7 +209,7 @@ I need help with:
               <CreateTaskModal
                 token={token!}
                 onTaskCreated={fetchTasks}
-                defaultDueDate={selectedDate ?? undefined}  {/* Fix applied here */}
+                defaultDueDate={selectedDate ?? undefined}
               />
             </div>
           </div>
