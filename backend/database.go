@@ -19,8 +19,26 @@ func ConnectDatabase() {
     password := os.Getenv("DB_PASSWORD")
     dbname := os.Getenv("DB_NAME")
 
-    if host == "" || port == "" || user == "" || password == "" || dbname == "" {
-        log.Fatal("Database environment variables not set properly")
+    // Check for missing environment variables and log which ones are missing.
+    missing := []string{}
+    if host == "" {
+        missing = append(missing, "DB_HOST")
+    }
+    if port == "" {
+        missing = append(missing, "DB_PORT")
+    }
+    if user == "" {
+        missing = append(missing, "DB_USER")
+    }
+    if password == "" {
+        missing = append(missing, "DB_PASSWORD")
+    }
+    if dbname == "" {
+        missing = append(missing, "DB_NAME")
+    }
+
+    if len(missing) > 0 {
+        log.Fatalf("Database environment variables not set properly. Missing: %v", missing)
     }
 
     dsn := fmt.Sprintf(
