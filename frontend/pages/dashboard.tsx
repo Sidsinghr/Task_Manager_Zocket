@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState, MouseEvent } from 'react';
 import axios from 'axios';
-import Calendar from 'react-calendar'; // Remove the incorrect import
+import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import { AuthContext } from '../context/AuthContext';
 import useWebSocket from 'react-use-websocket';
@@ -10,8 +10,8 @@ import TaskList from '../components/TaskList';
 import CreateTaskModal from '../components/CreateTaskModal';
 import EditTaskModal from '../components/EditTaskModal';
 
-// Define the Value type manually
-type Value = Date | [Date, Date] | null;
+// Updated type to account for possible null dates in range selection
+type CalendarValue = Date | [Date | null, Date | null] | null;
 
 const Dashboard: React.FC = () => {
   const { token, logout } = useContext(AuthContext);
@@ -111,13 +111,17 @@ const Dashboard: React.FC = () => {
   };
 
   // Fix: Handle Calendar onChange with proper typing
-  const handleDateChange = (value: Value, event: MouseEvent<HTMLButtonElement, MouseEvent>) => {
+  const handleDateChange = (
+    value: CalendarValue,
+    event: React.MouseEvent<HTMLButtonElement>
+  ) => {
     if (value instanceof Date) {
       setSelectedDate(value);
     } else if (Array.isArray(value)) {
-      setSelectedDate(value[0]); // Use the first date in the range
+      const firstDate = value[0];
+      setSelectedDate(firstDate ?? null);
     } else {
-      setSelectedDate(null); // Handle null case
+      setSelectedDate(null);
     }
   };
 
@@ -222,7 +226,7 @@ I need help with:
                   tasks={notCompletedTasks}
                   onDelete={handleDeleteTask}
                   onStatusChange={handleStatusChange}
-                  onAiHelp={handleAiHelp} // Pass the callback
+                  onAiHelp={handleAiHelp}
                 />
               )}
             </div>
@@ -251,14 +255,13 @@ I need help with:
                   tasks={filteredTasks}
                   onDelete={handleDeleteTask}
                   onStatusChange={handleStatusChange}
-                  onAiHelp={handleAiHelp} // Pass the callback
+                  onAiHelp={handleAiHelp}
                 />
               )}
             </div>
 
             <div className="bg-white p-4 rounded shadow">
               <h2 className="text-xl font-semibold text-gray-800 mb-4">Ask for Suggestions</h2>
-              {/* Pass the aiPrompt to ChatInterface as initialPrompt */}
               <ChatInterface initialPrompt={aiPrompt} />
             </div>
           </div>
