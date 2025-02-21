@@ -97,20 +97,6 @@ func aiSuggestHandler(c *fiber.Ctx) error {
     log.Printf("Gemini Response: %+v\n", geminiResp)
 
     // Extract the generated suggestion from the response.
-    // Expected structure:
-    // {
-    //    "candidates": [
-    //         {
-    //            "content": {
-    //                "parts": [
-    //                     {"text": "Your generated text here"}
-    //                ]
-    //            },
-    //            ... other fields ...
-    //         }
-    //    ],
-    //    ... other fields ...
-    // }
     var suggestion string
     if candidates, ok := geminiResp["candidates"].([]interface{}); ok && len(candidates) > 0 {
         if candidate, ok := candidates[0].(map[string]interface{}); ok {
@@ -133,7 +119,6 @@ func aiSuggestHandler(c *fiber.Ctx) error {
     // Return the generated suggestion.
     return c.JSON(fiber.Map{"suggestions": suggestion})
 }
-
 
 func main() {
     // Connect to the database.
@@ -169,6 +154,11 @@ func main() {
         return c.JSON(fiber.Map{"message": "Welcome to the protected route!"})
     })
 
-    // Start the server on port 3000.
-    log.Fatal(app.Listen(":3000"))
+    // Read port from environment variable (default to 3000).
+    port := os.Getenv("PORT")
+    if port == "" {
+        port = "3000"
+    }
+    log.Printf("Server starting on port %s", port)
+    log.Fatal(app.Listen(":" + port))
 }
